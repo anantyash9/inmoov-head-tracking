@@ -1,0 +1,7 @@
+neck_pitch = high 30 low 95
+neck_yaw = left 90 , right 0 , 45 center - green
+mouth = open 120,close 90 - yellow
+eye-pitch - high 0 low 60 red
+eye_yaw - left 120 right 20 orange
+
+ 
