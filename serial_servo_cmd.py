@@ -11,7 +11,7 @@ pins={"face_pitch":6,
 
 mean={"face_pitch":95,
 "face_yaw":73,
-"mouth":80,
+"mouth":90,
 "eye_pitch":30,
 "eye_yaw":80}
 
@@ -29,23 +29,24 @@ for k,v in pins.items():
 def mouth_moov():
     t1=time.time()
     while time.time()-t1<5:
-        board.digital[pins["mouth"]].write(angle_to_pwm(random.randrange(80,120)))
+        board.digital[pins["mouth"]].write(angle_to_pwm(random.randrange(90,120)))
         sleep(0.2)
         board.digital[pins["mouth"]].write(angle_to_pwm(80))
+        sleep(0.2)
 
 def moov(part,angle):
     board.digital[pins[part]].write(angle_to_pwm(int(angle)))
-# while True:
-#     print("enter part and angle : ")
-#     angle=input()
-#     if angle=="mouth_moov":
-#         mouth_moov()
-#     else:
-#         vals=angle.split(":")
-#         if vals[0] in pins.keys():
-#             board.digital[pins[vals[0]]].write(angle_to_pwm(int(vals[1])))      
-#         else:
-#             print("enter valid part")
+while True:
+    print("enter part and angle : ")
+    angle=input()
+    if angle=="mouth_moov":
+        mouth_moov()
+    else:
+        vals=angle.split(":")
+        if vals[0] in pins.keys():
+            board.digital[pins[vals[0]]].write(angle_to_pwm(int(vals[1])))      
+        else:
+            print("enter valid part")
 
 # print("start")
 # board.digital[pin].write(angle)

@@ -20,17 +20,17 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 with mp_face_mesh.FaceMesh(
     max_num_faces=1,
-    refine_landmarks=False,
+    refine_landmarks=True,
     min_detection_confidence=0.5,
     min_tracking_confidence=0.5) as face_mesh:
   while cap.isOpened():
     success, image = cap.read()
-    
+    image=cv2.flip(image,1)
     if not success:
       print("Ignoring empty camera frame.")
       # If loading a video, use 'break' instead of 'continue'.
       continue
-    image=cv2.flip(image,1)
+
     # To improve performance, optionally mark the image as not writeable to
     # pass by reference.
     image.flags.writeable = False
@@ -64,23 +64,25 @@ with mp_face_mesh.FaceMesh(
         base_eye_yaw=80
         eye_pitch=base_eye_pitch+((0.5-center[1])*30)
         eye_yaw=base_eye_yaw-((0.5-center[0])*60)
+        print("eye_pitch",eye_pitch)
+        print("eye_yaw",eye_yaw)
         serial_servo.moov("eye_pitch",eye_pitch)
         serial_servo.moov("eye_yaw",eye_yaw)
         # print(face_landmarks[mp_face_mesh.FACEMESH_FACE_OVAL])
-        # mp_drawing.draw_landmarks(
-        #     image=image,
-        #     landmark_list=face_landmarks,
-        #     connections=mp_face_mesh.FACEMESH_TESSELATION,
-        #     landmark_drawing_spec=None,
-        #     connection_drawing_spec=mp_drawing_styles
-        #     .get_default_face_mesh_tesselation_style())
-        # mp_drawing.draw_landmarks(
-        #     image=image,
-        #     landmark_list=face_landmarks,
-        #     connections=mp_face_mesh.FACEMESH_CONTOURS,
-        #     landmark_drawing_spec=None,
-        #     connection_drawing_spec=mp_drawing_styles
-        #     .get_default_face_mesh_contours_style())
+        mp_drawing.draw_landmarks(
+            image=image,
+            landmark_list=face_landmarks,
+            connections=mp_face_mesh.FACEMESH_TESSELATION,
+            landmark_drawing_spec=None,
+            connection_drawing_spec=mp_drawing_styles
+            .get_default_face_mesh_tesselation_style())
+        mp_drawing.draw_landmarks(
+            image=image,
+            landmark_list=face_landmarks,
+            connections=mp_face_mesh.FACEMESH_CONTOURS,
+            landmark_drawing_spec=None,
+            connection_drawing_spec=mp_drawing_styles
+            .get_default_face_mesh_contours_style())
         # mp_drawing.draw_landmarks(
         #     image=image,
         #     landmark_list=face_landmarks,
@@ -89,7 +91,7 @@ with mp_face_mesh.FaceMesh(
         #     connection_drawing_spec=mp_drawing_styles
         #     .get_default_face_mesh_iris_connections_style())
     # Flip the image horizontally for a selfie-view display.
-    # cv2.imshow('MediaPipe Face Mesh', cv2.flip(image, 1))
-    # if cv2.waitKey(5) & 0xFF == 27:
-    #   break
+    cv2.imshow('MediaPipe Face Mesh', cv2.flip(image, 1))
+    if cv2.waitKey(5) & 0xFF == 27:
+      break
 cap.release()
